@@ -51,6 +51,8 @@ def runner():
             print(task.result())
             if task.result() == 401:
                 print('Error: Api Key Missing')
+            if task.result() == 200:
+                button2['state'] = 'normal'
 
 
 def reset_results():
@@ -77,14 +79,15 @@ def insert_db():
     reset_db()
     files = glob.glob("*.json")
     for data_file in files:
-        f = open(data_file)
+        f = open(data_file, encoding='utf8')
         try:
             data = json.load(f)
             # data1= json.dump(data)
             if data["status"] == "ok" and data["totalResults"] > 0:
                 news_data.append(data)
-        except:
-            print('Error insert_db', f)
+                print(len(news_data))
+        except Exception as e:
+            print('Error insert_db', f, e)
     for data in news_data:
         try:
             store_data(data)
@@ -152,6 +155,7 @@ def print_news():
             pady='25')
         l.pack()
 
+    button3['state'] = 'disabled'
     window.mainloop()
 
 
@@ -161,7 +165,7 @@ def print_news():
 button1 = tk.Button(window, bd=5, relief='raised', font='-size 10 -weight bold', text="Get Data From Api",
                     command=runner)
 button2 = tk.Button(window, bd=5, relief='raised', font='-size 10 -weight bold', text="Insert Data To DataBase",
-                    command=insert_db)
+                    command=insert_db, state='disabled')
 button3 = tk.Button(window, bd=5, relief='raised', font='-size 10 -weight bold', text="Get Data from DataBase",
                     command=print_news)
 button4 = tk.Button(window, bd=5, padx=10, relief='raised', font='-size 10 -weight bold', text="Exit", command=quit)
